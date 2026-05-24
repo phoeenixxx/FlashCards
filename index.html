@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS & TS Flashcards</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <header class="main-header">
+            <h1 class="header-title">JS & TS სასწავლო ბარათები</h1>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <span class="progress-text" id="progress-text">1 / 300</span>
+            </div>
+        </header>
+
+        <main class="content-area">
+            <div class="card-viewport">
+                <div class="flashcard-box" id="flashcard">
+                    <div class="card-side front-side">
+                        <span class="badge" id="card-category">კატეგორია</span>
+                        <div class="text-wrapper">
+                            <p class="question-paragraph" id="card-question">კითხვა</p>
+                        </div>
+                        <span class="action-hint">დააკლიკეთ პასუხისთვის</span>
+                    </div>
+                    <div class="card-side back-side">
+                        <div class="text-wrapper">
+                            <p class="answer-paragraph" id="card-answer">პასუხი</p>
+                        </div>
+                        <button class="view-details-trigger" id="details-btn">ვრცლად განმარტება</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-wrapper">
+                <button id="prev-btn" class="control-arrow">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <button id="next-btn" class="control-arrow">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <div class="backdrop" id="modal-backdrop">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="modal-heading"> დეტალური ახსნა</h3>
+                <button class="dismiss-modal" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc" id="modal-text"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
