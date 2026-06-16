@@ -3,58 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JS & TS Flashcards</title>
+    <title>JS & TS Interactive Academy</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="light-mode">
+    <div class="toolbar">
+        <button id="theme-toggle" class="toolbar-btn">🌙</button>
+        <button id="lang-toggle" class="toolbar-btn">EN</button>
+    </div>
+
     <div class="app-wrapper">
-        <header class="main-header">
-            <h1 class="header-title">JS & TS სასწავლო ბარათები</h1>
-            <div class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progress-fill"></div>
-                </div>
-                <span class="progress-text" id="progress-text">1 / 300</span>
-            </div>
-        </header>
-
-        <main class="content-area">
-            <div class="card-viewport">
-                <div class="flashcard-box" id="flashcard">
-                    <div class="card-side front-side">
-                        <span class="badge" id="card-category">კატეგორია</span>
-                        <div class="text-wrapper">
-                            <p class="question-paragraph" id="card-question">კითხვა</p>
-                        </div>
-                        <span class="action-hint">დააკლიკეთ პასუხისთვის</span>
-                    </div>
-                    <div class="card-side back-side">
-                        <div class="text-wrapper">
-                            <p class="answer-paragraph" id="card-answer">პასუხი</p>
-                        </div>
-                        <button class="view-details-trigger" id="details-btn">ვრცლად განმარტება</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="nav-wrapper">
-                <button id="prev-btn" class="control-arrow">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <div id="language-screen" class="view-screen">
+            <h1 class="menu-title" id="lng-dir-title">აირჩიეთ მიმართულება</h1>
+            <div class="selection-grid">
+                <button class="menu-card-btn js-theme" data-lang="js">
+                    <span class="icon">JS</span>
+                    <h2>JavaScript</h2>
+                    <p id="lng-js-desc">საფუძვლები, DOM API და ასინქრონული ოპერაციები</p>
                 </button>
-                <button id="next-btn" class="control-arrow">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                <button class="menu-card-btn ts-theme" data-lang="ts">
+                    <span class="icon">TS</span>
+                    <h2>TypeScript</h2>
+                    <p id="lng-ts-desc">ტიპების უსაფრთხოება და კონფიგურაცია</p>
                 </button>
             </div>
-        </main>
+        </div>
+
+        <div id="mode-screen" class="view-screen hidden">
+            <div class="screen-header">
+                <button id="back-to-lang" class="back-link">&larr; უკან</button>
+                <h1 class="menu-title" id="lng-mode-title">აირჩიეთ რეჟიმი</h1>
+            </div>
+            <div class="selection-grid">
+                <button class="menu-card-btn mode-btn" data-mode="flashcards">
+                    <h2>📇 Flashcards</h2>
+                    <p id="lng-mode-fc-desc">ისწავლეთ საკითხები ბარათების გადატრიალებით</p>
+                </button>
+                <button class="menu-card-btn mode-btn" data-mode="quiz">
+                    <h2>📝 Quiz Mode</h2>
+                    <p id="lng-mode-qz-desc">შეამოწმეთ ცოდნა 10-კითხვიან ქვიზში</p>
+                </button>
+            </div>
+        </div>
+
+        <div id="level-screen" class="view-screen hidden">
+            <div class="screen-header">
+                <button id="back-to-mode" class="back-link">&larr; უკან</button>
+                <h1 class="menu-title" id="lng-level-title">აირჩიეთ სირთულე</h1>
+            </div>
+            <div class="level-list">
+                <button class="level-row-btn" data-level="beginner">
+                    <div class="level-meta">
+                        <h3>Beginner</h3>
+                        <p id="lng-beg-desc">საწყისი დონე და ფუნდამენტური ბაზისი</p>
+                    </div>
+                    <span class="count-badge"></span>
+                </button>
+                <button class="level-row-btn" data-level="intermediate">
+                    <div class="level-meta">
+                        <h3>Intermediate</h3>
+                        <p id="lng-int-desc">საშუალო დონე და პრაქტიკული კონსტრუქციები</p>
+                    </div>
+                    <span class="count-badge"></span>
+                </button>
+                <button class="level-row-btn" data-level="advanced">
+                    <div class="level-meta">
+                        <h3>Advanced</h3>
+                        <p id="lng-adv-desc">სიღრმისეული არქიტექტურა და ოპტიმიზაცია</p>
+                    </div>
+                    <span class="count-badge"></span>
+                </button>
+            </div>
+        </div>
+
+        <div id="card-screen" class="view-screen hidden">
+            <header class="main-header">
+                <button id="back-to-levels-fc" class="back-link">მენიუ</button>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <span class="progress-text" id="progress-text">1 / 50</span>
+                </div>
+            </header>
+
+            <main class="content-area">
+                <div class="card-viewport">
+                    <div class="flashcard-box" id="flashcard">
+                        <div class="card-side front-side">
+                            <span class="badge" id="card-category">კატეგორია</span>
+                            <div class="text-wrapper">
+                                <p class="question-paragraph" id="card-question">კითხვა</p>
+                            </div>
+                            <span class="action-hint" id="lng-hint">დააწკაპუნეთ პასუხისთვის</span>
+                        </div>
+                        <div class="card-side back-side">
+                            <div class="text-wrapper">
+                                <p class="answer-paragraph" id="card-answer">პასუხი</p>
+                            </div>
+                            <button class="view-details-trigger" id="details-btn">ვრცლად განმარტება</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-wrapper">
+                    <button id="prev-btn" class="control-arrow">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <button id="next-btn" class="control-arrow">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                </div>
+            </main>
+        </div>
+
+        <div id="quiz-screen" class="view-screen hidden">
+            <header class="main-header">
+                <button id="back-to-levels-qz" class="back-link">მენიუ</button>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="quiz-progress-fill"></div>
+                    </div>
+                    <span class="progress-text" id="quiz-progress-text">1 / 10</span>
+                </div>
+            </header>
+            <main class="content-area">
+                <div class="quiz-question-container">
+                    <span class="badge" id="quiz-card-category">კატეგორია</span>
+                    <p class="question-paragraph" id="quiz-question-text">კითხვა</p>
+                </div>
+                <div id="quiz-options-container" class="options-grid"></div>
+                <div class="quiz-footer">
+                    <button id="quiz-next-btn" class="control-arrow hidden">შემდეგი &rarr;</button>
+                </div>
+            </main>
+        </div>
+
+        <div id="quiz-result-screen" class="view-screen hidden">
+            <h1 class="menu-title" id="lng-res-title">ქვიზის შედეგი</h1>
+            <div class="result-score-box">
+                <span id="result-score-display">0 / 10</span>
+            </div>
+            <div class="selection-grid">
+                <button id="retry-same-btn" class="menu-card-btn">
+                    <h2 id="lng-retry-title">იგივე კითხვები</h2>
+                </button>
+                <button id="start-new-btn" class="menu-card-btn">
+                    <h2 id="lng-new-title">ახალი კითხვები</h2>
+                </button>
+                <button id="back-to-menu-btn" class="back-link-center">მენიუში დაბრუნება</button>
+            </div>
+        </div>
     </div>
 
     <div class="backdrop" id="modal-backdrop">
         <div class="modal-box">
             <div class="modal-header">
-                <h3 class="modal-heading"> დეტალური ახსნა</h3>
+                <h3 class="modal-heading" id="lng-modal-title">საკითხის დეტალური ახსნა</h3>
                 <button class="dismiss-modal" id="close-modal">&times;</button>
             </div>
             <div class="modal-body">
