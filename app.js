@@ -1,6 +1,6 @@
 let currentLanguage = "js";
 let currentMode = "flashcards";
-let currentLevel = "beginner";
+let currentLevel = "comp_0";
 let activeUiLang = "ka";
 let currentIndex = 0;
 
@@ -51,6 +51,24 @@ const modalBackdrop = document.getElementById('modal-backdrop');
 const closeModal = document.getElementById('close-modal');
 const modalText = document.getElementById('modal-text');
 
+const componentsConfig = {
+    js: [
+        { id: "comp_0", ka: "შესავალი და ისტორია", en: "Introduction & History", descKa: "Great 3, ისტორია, V8 ძრავი, Node.js და მოვლენათა ციკლი", descEn: "Great 3, History, V8 Engine, Node.js & Event Loop" },
+        { id: "comp_1", ka: "გამოტანა და ცვლადები", en: "Output & Variables", descKa: "კონსოლები, Hoisting მექანიზმი, let/const, ფუნქციები და Coercion", descEn: "Logging, Hoisting, let/const, Functions & Type Coercion" },
+        { id: "comp_2", ka: "პირობები, ციკლები, ივენთები", en: "Control Flow & Events", descKa: "Switch-case, for-of ციკლი, addEventListener და Early Return", descEn: "Switch statement, for-of loops, Event Listeners & Early Return" },
+        { id: "comp_3", ka: "ობიექტები და მასივები", en: "Objects & Arrays", descKa: "Key-value წყვილები, ფილტრაცია, მოდიფიკაცია და იმუტაბელურობა", descEn: "Key-value bindings, higher-order filter, map & immutability" },
+        { id: "comp_4", ka: "სტრიქონები, საცავი და დრო", en: "Strings, Storage & Dates", descKa: "getMonth სპეციფიკა, სტრიქონული მეთოდები, localStorage და ტაიმერები", descEn: "getMonth index, string APIs, localStorage serialization & timers" },
+        { id: "comp_5", ka: "DOM არქიტექტურა", en: "DOM Architecture", descKa: "კვანძები, querySelector, classList, createElement და ოპტიმიზაცია", descEn: "Web nodes graph, querySelectorAll, classList, node injection" },
+        { id: "comp_6", ka: "ასინქრონული პროცესები", en: "Asynchronous API Flow", descKa: "პრომისის მდგომარეობები, async/await, try-catch, Fetch და CRUD", descEn: "Promise states, async/await rules, network fetch & CRUD methods" }
+    ],
+    ts: [
+        { id: "comp_7", ka: "სტატიკური ტიპიზაცია", en: "Static Typing Basics", descKa: "Microsoft ისტორია, Explicit vs Implicit მინიჭება, any საფრთხე", descEn: "Microsoft footprint, Explicit vs Implicit inference, any type leak" },
+        { id: "comp_8", ka: "TSC კომპილაცია", en: "TSC Compilation", descKa: "npm ინსტალაცია, tsc --init, tsconfig პარამეტრები და Watch Mode", descEn: "npm packages, tsconfig rules, target/strict/dirs bounds & Watch Mode" },
+        { id: "comp_9", ka: "ფუნქციები და კოლექციები", en: "Functions & Array Matrix", descKa: "არგუმენტების ტიპიზაცია, void მაჩვენებელი, არასავალდებულო ველები", descEn: "Parameter contracts, void retvals, optionals parameters configurations" },
+        { id: "comp_10", ka: "ინტერფეისები და უტილიტები", en: "Interfaces & Utilities", descKa: "Declaration Merging, extends იერარქია, Union ტიპები და Omit", descEn: "Declaration merging blocks, extends inheritance, Unions & Omit utility" }
+    ]
+};
+
 const uiTranslations = {
     ka: {
         dirTitle: "აირჩიეთ მიმართულება",
@@ -58,15 +76,12 @@ const uiTranslations = {
         tsDesc: "ტიპების უსაფრთხოება და კონფიგურაცია",
         modeTitle: "აირჩიეთ რეჟიმი",
         modeFcDesc: "ისწავლეთ საკითხები ბარათების გადატრიალებით",
-        modeQzDesc: "შეამოწმეთ ცოდნა 10-კითხვიან ქვიზში",
-        levelTitle: "აირჩიეთ სირთულე",
-        begDesc: "საწყისი დონე და ფუნდამენტური ბაზისი",
-        intDesc: "საშუალო დონე და პრაქტიკული კონსტრუქციები",
-        advDesc: "სიღრმისეული არქიტექტურა და ოპტიმიზაცია",
+        modeQzDesc: "შეამოწმეთ ცოდნა 20-კითხვიან ქვიზში",
+        levelTitle: "აირჩიეთ კომპონენტი",
         badgeUnitCards: "ბარათი",
         badgeUnitQuestions: "კითხვა",
         hint: "დააწკაპუნეთ პასუხისთვის",
-        detailsBtn: "ვრცლად განმარტება",
+        detailsBtn: "დამატებითი ინფორმაცია",
         modalTitle: "საკითხის დეტალური ახსნა",
         resTitle: "ქვიზის შედეგი",
         retryTitle: "იგივე კითხვები",
@@ -82,15 +97,12 @@ const uiTranslations = {
         tsDesc: "Type Safety and Workspace Configuration",
         modeTitle: "Select Mode",
         modeFcDesc: "Learn topics by flipping interactive cards",
-        modeQzDesc: "Test your knowledge in a 10-question quiz",
-        levelTitle: "Select Difficulty",
-        begDesc: "Entry level structures and core foundations",
-        intDesc: "Intermediate structures and practical concepts",
-        advDesc: "Deep architectural setups and optimization",
+        modeQzDesc: "Test your knowledge in a 20-question quiz",
+        levelTitle: "Select Component",
         badgeUnitCards: "cards",
         badgeUnitQuestions: "questions",
         hint: "Click to reveal the answer",
-        detailsBtn: "Detailed Explanation",
+        detailsBtn: "More Details",
         modalTitle: "In-Depth Topic Analysis",
         resTitle: "Quiz Result",
         retryTitle: "Same Questions",
@@ -110,25 +122,79 @@ function shuffleArray(array) {
     return array;
 }
 
+function renderComponentGrid() {
+    const container = document.querySelector('.level-options-container');
+    if (!container) return;
+    container.innerHTML = "";
+    
+    const activeList = componentsConfig[currentLanguage];
+    const trans = uiTranslations[activeUiLang];
+    
+    activeList.forEach(comp => {
+        const targetArray = flashcardsData.filter(card => card.lang === currentLanguage && card.component === comp.id);
+        const displayTitle = activeUiLang === "ka" ? comp.ka : comp.en;
+        const displayDesc = activeUiLang === "ka" ? comp.descKa : comp.descEn;
+        const badgeUnit = currentMode === "quiz" ? trans.badgeUnitQuestions : trans.badgeUnitCards;
+        const badgeValue = targetArray.length;
+        
+        const rowBtn = document.createElement('button');
+        rowBtn.classList.add('level-row-btn');
+        rowBtn.setAttribute('data-level', comp.id);
+        
+        rowBtn.innerHTML = `
+            <div class="level-row-info">
+                <div class="level-row-name">${displayTitle}</div>
+                <div class="level-row-desc">${displayDesc}</div>
+            </div>
+            <div class="count-badge">${badgeValue} <span class="badge-unit">${badgeUnit}</span></div>
+        `;
+        
+        rowBtn.addEventListener('click', () => {
+            currentLevel = comp.id;
+            levelScreen.classList.add('hidden');
+            
+            filteredCards = flashcardsData.filter(card => card.lang === currentLanguage && card.component === currentLevel);
+            
+            if (currentMode === "flashcards") {
+                cardScreen.classList.remove('hidden');
+                filteredCards = shuffleArray([...filteredCards]);
+                currentIndex = 0;
+                renderCard();
+            } else {
+                quizScreen.classList.remove('hidden');
+                generateNewQuizDeck();
+            }
+        });
+        
+        container.appendChild(rowBtn);
+    });
+}
+
 function updateUiStrings() {
     const trans = uiTranslations[activeUiLang];
-    document.getElementById('lng-dir-title').textContent = trans.dirTitle;
-    document.getElementById('lng-js-desc').textContent = trans.jsDesc;
-    document.getElementById('lng-ts-desc').textContent = trans.tsDesc;
-    document.getElementById('lng-mode-title').textContent = trans.modeTitle;
-    document.getElementById('lng-mode-fc-desc').textContent = trans.modeFcDesc;
-    document.getElementById('lng-mode-qz-desc').textContent = trans.modeQzDesc;
-    document.getElementById('lng-level-title').textContent = trans.levelTitle;
-    document.getElementById('lng-beg-desc').textContent = trans.begDesc;
-    document.getElementById('lng-int-desc').textContent = trans.intDesc;
-    document.getElementById('lng-adv-desc').textContent = trans.advDesc;
-    document.getElementById('lng-hint').textContent = trans.hint;
-    document.getElementById('lng-modal-title').textContent = trans.modalTitle;
-    document.getElementById('lng-res-title').textContent = trans.resTitle;
-    document.getElementById('lng-retry-title').textContent = trans.retryTitle;
-    document.getElementById('lng-new-title').textContent = trans.newTitle;
+    const dirTitleEl = document.getElementById('lng-dir-title');
+    const modeTitleEl = document.getElementById('lng-mode-title');
+    const modeFcDescEl = document.getElementById('lng-mode-fc-desc');
+    const modeQzDescEl = document.getElementById('lng-mode-qz-desc');
+    const levelTitleEl = document.getElementById('lng-level-title');
+    const hintEl = document.getElementById('lng-hint');
+    const modalTitleEl = document.getElementById('lng-modal-title');
+    const resTitleEl = document.getElementById('lng-res-title');
+    const retryTitleEl = document.getElementById('lng-retry-title');
+    const newTitleEl = document.getElementById('lng-new-title');
+
+    if (dirTitleEl) dirTitleEl.textContent = trans.dirTitle;
+    if (modeTitleEl) modeTitleEl.textContent = trans.modeTitle;
+    if (modeFcDescEl) modeFcDescEl.textContent = trans.modeFcDesc;
+    if (modeQzDescEl) modeQzDescEl.textContent = trans.modeQzDesc;
+    if (levelTitleEl) levelTitleEl.textContent = trans.levelTitle;
+    if (hintEl) hintEl.textContent = trans.hint;
+    if (modalTitleEl) modalTitleEl.textContent = trans.modalTitle;
+    if (resTitleEl) resTitleEl.textContent = trans.resTitle;
+    if (retryTitleEl) retryTitleEl.textContent = trans.retryTitle;
+    if (newTitleEl) newTitleEl.textContent = trans.newTitle;
+
     backToMenuBtn.textContent = trans.backToMenu;
-    
     quizNextBtn.innerHTML = trans.quizNext;
     detailsBtn.textContent = trans.detailsBtn;
     backToLangBtn.textContent = trans.back;
@@ -136,20 +202,8 @@ function updateUiStrings() {
     backToLevelsFcBtn.textContent = trans.menu;
     backToLevelsQzBtn.textContent = trans.menu;
     
-    updateBadgeLabels();
+    renderComponentGrid();
     langToggle.textContent = activeUiLang === "ka" ? "EN" : "KA";
-}
-
-function updateBadgeLabels() {
-    const trans = uiTranslations[activeUiLang];
-    const badges = document.querySelectorAll('.count-badge');
-    badges.forEach(b => {
-        if (currentMode === "quiz") {
-            b.innerHTML = `10 <span class="badge-unit">${trans.badgeUnitQuestions}</span>`;
-        } else {
-            b.innerHTML = `50 <span class="badge-unit">${trans.badgeUnitCards}</span>`;
-        }
-    });
 }
 
 themeToggle.addEventListener('click', () => {
@@ -179,28 +233,9 @@ document.querySelectorAll('#language-screen .menu-card-btn').forEach(btn => {
 document.querySelectorAll('#mode-screen .mode-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         currentMode = btn.getAttribute('data-mode');
-        updateBadgeLabels();
         modeScreen.classList.add('hidden');
         levelScreen.classList.remove('hidden');
-    });
-});
-
-document.querySelectorAll('.level-row-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        currentLevel = btn.getAttribute('data-level');
-        levelScreen.classList.add('hidden');
-        
-        filteredCards = flashcardsData.filter(card => card.lang === currentLanguage && card.level === currentLevel);
-        
-        if (currentMode === "flashcards") {
-            cardScreen.classList.remove('hidden');
-            filteredCards = shuffleArray([...filteredCards]);
-            currentIndex = 0;
-            renderCard();
-        } else {
-            quizScreen.classList.remove('hidden');
-            generateNewQuizDeck();
-        }
+        renderComponentGrid();
     });
 });
 
@@ -217,11 +252,13 @@ backToModeBtn.addEventListener('click', () => {
 backToLevelsFcBtn.addEventListener('click', () => {
     cardScreen.classList.add('hidden');
     levelScreen.classList.remove('hidden');
+    renderComponentGrid();
 });
 
 backToLevelsQzBtn.addEventListener('click', () => {
     quizScreen.classList.add('hidden');
     levelScreen.classList.remove('hidden');
+    renderComponentGrid();
 });
 
 backToMenuBtn.addEventListener('click', () => {
@@ -230,6 +267,7 @@ backToMenuBtn.addEventListener('click', () => {
 });
 
 function renderCard() {
+    if (filteredCards.length === 0) return;
     flashcard.classList.remove('flipped');
     setTimeout(() => {
         const item = filteredCards[currentIndex];
@@ -263,43 +301,48 @@ nextBtn.addEventListener('click', () => {
 });
 
 detailsBtn.addEventListener('click', () => {
+    if (filteredCards.length === 0) return;
     const item = filteredCards[currentIndex];
     modalText.textContent = activeUiLang === "ka" ? item.details_ka : item.details_en;
     modalBackdrop.style.display = 'flex';
 });
 
 function generateNewQuizDeck() {
-    let pool = shuffleArray([...filteredCards]);
-    quizCards = pool.slice(0, 10);
+    quizCards = shuffleArray([...filteredCards]);
     quizCurrentIndex = 0;
     quizScore = 0;
     renderQuizCard();
 }
 
 function renderQuizCard() {
+    if (quizCards.length === 0) return;
     quizNextBtn.classList.add('hidden');
     const item = quizCards[quizCurrentIndex];
     
     quizCategoryEl.textContent = activeUiLang === "ka" ? item.category_ka : item.category_en;
     quizQuestionTextEl.textContent = activeUiLang === "ka" ? item.question_ka : item.question_en;
     
-    quizProgressText.textContent = `${quizCurrentIndex + 1} / 10`;
-    quizProgressFill.style.width = `${((quizCurrentIndex + 1) / 10) * 100}%`;
+    quizProgressText.textContent = `${quizCurrentIndex + 1} / ${quizCards.length}`;
+    quizProgressFill.style.width = `${((quizCurrentIndex + 1) / quizCards.length) * 100}%`;
     
     const correctAnswer = activeUiLang === "ka" ? item.answer_ka : item.answer_en;
     
-    let incorrectAnswers = filteredCards
-        .filter(c => c.question_ka !== item.question_ka)
-        .map(c => activeUiLang === "ka" ? c.answer_ka : c.answer_en);
+    let incorrectAnswers = flashcardsData
+        .filter(c => c.lang === currentLanguage && c.component === currentLevel)
+        .map(c => activeUiLang === "ka" ? c.answer_ka : c.answer_en)
+        .filter(ans => ans !== correctAnswer);
         
     incorrectAnswers = [...new Set(incorrectAnswers)];
     shuffleArray(incorrectAnswers);
     
     let options = [correctAnswer];
-    for (let i = 0; i < 3; i++) {
-        if (incorrectAnswers[i]) {
+    for (let i = 0; i < incorrectAnswers.length; i++) {
+        if (options.length < 4 && !options.includes(incorrectAnswers[i])) {
             options.push(incorrectAnswers[i]);
         }
+    }
+    while (options.length < 4) {
+        options.push(activeUiLang === "ka" ? `ალტერნატიული პასუხი ${options.length + 1}` : `Alternative Choice ${options.length + 1}`);
     }
     shuffleArray(options);
     
@@ -332,13 +375,13 @@ function handleQuizAnswer(selectedBtn, chosenOpt, correctOpt) {
 }
 
 quizNextBtn.addEventListener('click', () => {
-    if (quizCurrentIndex < 9) {
+    if (quizCurrentIndex < quizCards.length - 1) {
         quizCurrentIndex++;
         renderQuizCard();
     } else {
         quizScreen.classList.add('hidden');
         quizResultScreen.classList.remove('hidden');
-        resultScoreDisplay.textContent = `${quizScore} / 10`;
+        resultScoreDisplay.textContent = `${quizScore} / ${quizCards.length}`;
     }
 });
 
@@ -347,6 +390,7 @@ retrySameBtn.addEventListener('click', () => {
     quizScreen.classList.remove('hidden');
     quizCurrentIndex = 0;
     quizScore = 0;
+    quizCards = shuffleArray([...quizCards]);
     renderQuizCard();
 });
 

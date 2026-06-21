@@ -16,7 +16,6 @@ Deploy this project directly to **GitHub Pages** to share your interactive front
 - **100% Mobile Responsive:** Optimized layout flow across all devices—desktops, tablets, and smartphones.
 
 ## 📂 Project Structure
-```bash
 ├── index.html   # Semantic markup and core layout views
 ├── styles.css   # Glassmorphic UI architecture, themes, and 3D animations
 ├── data.js     # Decoupled data layer storing 300 dual-language records
